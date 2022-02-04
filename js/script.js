@@ -29,7 +29,7 @@ const getRollbackMessage = function(price){
   }
 }
 
-const getServicePrices = function (){
+const getAllServicePrices = function (){
  return servicePrice1 + servicePrice2;
 }
 
@@ -46,7 +46,7 @@ function getServicePercentPrices(){
   return fullPrice - Math.round(fullPrice * (rollback/100));
 }
 
-allServicePrices = getServicePrices();
+allServicePrices = getAllServicePrices();
 fullPrice = getFullPrice();
 servicePercentPrice  = getServicePercentPrices();
 
