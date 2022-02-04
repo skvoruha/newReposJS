@@ -14,22 +14,25 @@ const servicePercentPrice = fullPrice - Math.round(fullPrice * (rollback/100));
 
 console.log(title);
 console.log("Тип экрана: " + screens);
-console.log("Адаптив: " + Boolean(adaptive));
+console.log("Адаптив: " + adaptive);
 console.log("Дополнительная услуга 1: " + service1);
 console.log("Дополнительная услуга 2: " + service2);
 
+console.log(screens.length);
+console.log("Стоимость верстки экранов " + screenPrice + " долларов");
+console.log("Стоимость разработки сайта " + fullPrice + " рублей");
+console.log(screens.toLowerCase().split(", "));
+console.log(fullPrice * (rollback/100));
+
 switch (true){
-  case fullPrice > 30000:
+  case fullPrice >= 30000:
     console.log("Даем скидку в 10%");
-    console.log("Итоговая стоимость: " + (fullPrice - (fullPrice * (5/100))));
     break;
   case fullPrice >= 15000 && fullPrice < 30000:
     console.log("Даем скидку в 5%");
-    console.log("Итоговая стоимость: " + (fullPrice - (fullPrice * (10/100))));
     break;
   case fullPrice => 0 && fullPrice < 15000:
     console.log("Скидка не предусмотрена");
-    console.log("Итоговая стоимость: " + fullPrice);
     break;
   case fullPrice < 0 :
     console.log("Что то пошло не так");
@@ -37,3 +40,4 @@ switch (true){
   default:
     console.log("Что то явно не так поскольку default");
 }
+
