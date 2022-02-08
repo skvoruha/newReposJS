@@ -44,9 +44,11 @@ const getAllServicePrices = function (){
     } else if ( i === 1) {
       service2 = prompt("Какой дополнительный тип услуги нужен ?")
     }
-    if(isNumber(enteredNumber = +prompt("Сколько это будет стоить?"))){
-      sum = sum + enteredNumber
-    }
+
+    do {
+      enteredNumber = +prompt("Сколько это будет стоить?")
+    } while (!isNumber(enteredNumber))
+    sum = sum + enteredNumber
 
   }
   return sum
@@ -93,11 +95,8 @@ showTypeOf(screenPrice)
 showTypeOf(adaptive)
 
 console.log("allServicePrices" , allServicePrices);
-
 console.log(getRollbackMessage(fullPrice));
-console.log(typeof title);
-console.log(typeof screenPrice);
-console.log(typeof adaptive);
+
 
 console.log(screens.length);
 console.log(servicePercentPrice);
