@@ -64,9 +64,11 @@ const appData = {
       let price = 0
 
       do {
-        name = prompt("Какой дополнительный тип услуги нужен ?")+ " " + i
+        name = prompt("Какой дополнительный тип услуги нужен ?")
       }
       while(appData.isNumber(name))
+      // добавляем в конец имени индетификатор
+      name += " " + i;
 
       do {
         price = +prompt("Сколько это будет стоить?")
