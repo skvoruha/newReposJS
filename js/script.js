@@ -64,7 +64,7 @@ const appData = {
       let price = 0
 
       do {
-        name = prompt("Какой дополнительный тип услуги нужен ?")
+        name = prompt("Какой дополнительный тип услуги нужен ?")+ " " + i
       }
       while(appData.isNumber(name))
 
@@ -80,9 +80,12 @@ const appData = {
   },
   // данный мтод будет высчитывать стоимость нашиъ услуг экранов
   addPrices: function(){
-    for (let screen of appData.screens){
-      appData.screenPrice += screen.price
-    }
+    // for (let screen of appData.screens){
+    //   appData.screenPrice += screen.price
+    // }
+    appData.screenPrice = appData.screens.reduce(function(sum, item){
+      return (sum + item.price)
+    },0)
 
     for (let key in appData.services) {
       // в allServicePrices попадёт ссума всех наших значений из объекта services
