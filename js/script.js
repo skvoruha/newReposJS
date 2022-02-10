@@ -3,23 +3,20 @@
 // создадим объект
 const appData = {
  title: '',
- screens:'',
+ screens:[],
  screenPrice: 0,
  adaptive: true,
  rollback: 10,
  allServicePrices: 0,
  fullPrice: 0,
  servicePercentPrice: 0,
- service1: '',
- service2: '',
+ services: {},
  start: function(){
   appData.asking()
-
-  appData.title = appData.getTitle()
-
-  appData.allServicePrices = appData.getAllServicePrices();
-  appData.fullPrice = appData.getFullPrice();
-  appData.servicePercentPrice  = appData.getServicePercentPrices();
+  appData.addPrices()
+  appData.getFullPrice();
+  appData.getServicePercentPrices();
+  appData.getTitle()
 
   appData.logger()
  },
@@ -30,52 +27,83 @@ const appData = {
       console.log(key, (type === 'function' ? '' : appData[key]), '(' + type + ')');
     }
   },
+  // данный метод будет задавать вопросы
  asking: function () {
-    appData.title =  prompt("Как называется ваш проект?", "калькулятор верстки");
-    appData.screens  = prompt("Какие типы экранов нужно разработать? ", "пример:'Простые, Сложные, Интерактивные'");
-
 
     do {
-      appData.screenPrice = +prompt("Сколько будет стоить данная работа?");
-    }
-    while(!appData.isNumber(appData.screenPrice))
-
-    appData.adaptive = confirm("Нужен ли адаптив на сайте?");
-  },
-  isNumber: function(num){
-  // универсальная функция для проверки на число
-  return !isNaN(parseFloat(num)) && isFinite(num)
-  },
-  getAllServicePrices: function (){
-  let sum = 0
-
+        appData.title = prompt("Как называется ваш проект?", "калькулятор верстки");
+      }
+    while(appData.isNumber(appData.title))
+    // appData.screens  = prompt("Какие типы экранов нужно разработать? ", "пример:'Простые, Сложные, Интерактивные'");
 
     for (let i =0; i < 2; i++){
+      let name = ""
       let price = 0
 
-      if ( i === 0) {
-        appData.service1 = prompt("Какой дополнительный тип услуги нужен ?")
-      } else if ( i === 1) {
-        appData.service2 = prompt("Какой дополнительный тип услуги нужен ?")
+      do {
+        name = prompt("Какие типы экранов нужно разработать? ", "пример:'Простые, Сложные, Интерактивные'");
       }
+      while(appData.isNumber(name))
+      // пока name число оно выполняется
+
+
+      do {
+        price = +prompt("Сколько будет стоить данная работа?");
+      }
+      while(!appData.isNumber(price))
+
+      appData.screens.push({id: i, name: name,price: price})
+      //  в современном стандарте можно записать и так
+      // screens.push({id: i, name, price})
+
+    }
+
+    for (let i =0; i < 2; i++){
+
+      let name = ""
+      let price = 0
+
+      do {
+        name = prompt("Какой дополнительный тип услуги нужен ?")
+      }
+      while(appData.isNumber(name))
 
       do {
         price = +prompt("Сколько это будет стоить?")
       } while (!appData.isNumber(price))
-      sum += price
+
+      appData.services[name] = +price
 
     }
-    return sum
+
+    appData.adaptive = confirm("Нужен ли адаптив на сайте?");
+  },
+  // данный мтод будет высчитывать стоимость нашиъ услуг экранов
+  addPrices: function(){
+    for (let screen of appData.screens){
+      appData.screenPrice += screen.price
+    }
+
+    for (let key in appData.services) {
+      // в allServicePrices попадёт ссума всех наших значений из объекта services
+      appData.allServicePrices += appData.services[key]
+    }
+  },
+  isNumber: function(num){
+  // универсальная функция для проверки на число
+  return !isNaN(parseFloat(num)) && isFinite(num)
+  // parseFloat(n)  Получаем из строки число с плавающей точкой или NaN в случае неудачи
+  // isNaN(n)  Собственно проверяет значение на NaN, а мы проверяем с отрицанием
+  // isFinite(n)  Проверяем является ли переданное значение конечным числом
   },
   getFullPrice: function (){
-    return appData.screenPrice + appData.allServicePrices
+    appData.fullPrice = appData.screenPrice + appData.allServicePrices
   },
   getServicePercentPrices: function (){
-    return appData.fullPrice - Math.round(appData.fullPrice * (appData.rollback/100));
+    appData.servicePercentPrice = appData.fullPrice - Math.round(appData.fullPrice * (appData.rollback/100));
   },
   getTitle: function (){
-    appData.title = appData.title.trim().toLowerCase();
-    return appData.title[0].toUpperCase() + appData.title.slice(1);
+    appData.title = appData.title.trim()[0].toUpperCase() + appData.title.trim(1).toLocaleLowerCase();
   },
   getRollbackMessage: function(price){
     if (price >= 30000){
@@ -90,24 +118,8 @@ const appData = {
   },
   showTypeOf: function(variable){
     console.log(variable, typeof variable);
+    console.log(appData.screens);
   }
 }
 
 appData.start()
-
-// ВЫЗОВ ФУНКЦИИ showTypeOf удали по видео из урока
-// showTypeOf(title)
-// showTypeOf(screenPrice)
-// showTypeOf(adaptive)
-
-// console.log("allServicePrices" , allServicePrices);
-
-// console.log(getRollbackMessage(fullPrice));
-// console.log(typeof title);
-// console.log(typeof screenPrice);
-// console.log(typeof adaptive);
-
-// console.log(screens.length);
-// console.log(servicePercentPrice);
-
-// console.log("стоимость верски экрана " + screenPrice + " рублей и Стоимость разработки сайта " + fullPrice + " юаней");
