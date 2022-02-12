@@ -1,130 +1,50 @@
 'use strict'
+const body = document.querySelector('body')
+const adv = body.querySelector('.adv')
+// в переменную books зписываем все элементы с классои book
+const books = document.querySelectorAll('.book')
+//1 Восстановил порядок книг.
+// книгу 1(books[1]) ставлю перед книгой 2 (books[0])
+books[0].before(books[1])
+// книгу 3(books[4]) ставлю перед книгой 4 (books[2])
+books[3].before(books[4])
+// книгу 3(books[4]) ставлю перед книгой 4 (books[3])
+books[3].after(books[2])
+books[3].after(books[5])
+// 1 ое конец задания
 
-// создадим объект
-const appData = {
- title: '',
- screens:[],
- screenPrice: 0,
- adaptive: true,
- rollback: 10,
- allServicePrices: 0,
- fullPrice: 0,
- servicePercentPrice: 0,
- services: {},
- start: function(){
-  appData.asking()
-  appData.addPrices()
-  appData.getFullPrice();
-  appData.getServicePercentPrices();
-  appData.getTitle()
+// 2 Замена фона у body
+body.style.backgroundImage = "url(./image/computer_book.jpg)"
+//3 исправление Пропопипы на Прототипы
+books[4].querySelector('h2 > a').textContent = "Книга 3. this и Прототипы Объектов";
+// 4 Убираем рекламу с классом adv в body
+adv.style.display = "none"
+// 5
+const itemsTwoBook = books[0].querySelectorAll('ul > li')
+const itemsFiveBook = books[5].querySelectorAll('ul > li')
+const itemsSixBook =  books[2].querySelector('ul')
+// Глава 2 после 1 главый
+itemsTwoBook[3].after(itemsTwoBook[6])
+//  глава 3 перед 4 ой
+itemsTwoBook[4].before(itemsTwoBook[8])
+// Приложение С после приложенрия B
+itemsTwoBook[9].after(itemsTwoBook[2])
 
-  appData.logger()
- },
-  logger: function(){
-    for(let key in appData){
-      let type = typeof(appData[key])
+// Книга 5 Распрееление элементов
+// Глава 1 после предисловия
+itemsFiveBook[1].after(itemsFiveBook[9])
+// глава 2 после 1 главый
+itemsFiveBook[9].after(itemsFiveBook[3])
+// глава 3 после 2 ой
+itemsFiveBook[3].after(itemsFiveBook[4])
+// приложение а После 6 ой главый
+itemsFiveBook[7].after(itemsFiveBook[5])
 
-      console.log(key, (type === 'function' ? '' : appData[key]), '(' + type + ')');
-    }
-  },
-  // данный метод будет задавать вопросы
- asking: function () {
-
-    do {
-        appData.title = prompt("Как называется ваш проект?", "калькулятор верстки");
-      }
-    while(appData.isNumber(appData.title))
-    // appData.screens  = prompt("Какие типы экранов нужно разработать? ", "пример:'Простые, Сложные, Интерактивные'");
-
-    for (let i =0; i < 2; i++){
-      let name = ""
-      let price = 0
-
-      do {
-        name = prompt("Какие типы экранов нужно разработать? ", "пример:'Простые, Сложные, Интерактивные'");
-      }
-      while(appData.isNumber(name))
-      // пока name число оно выполняется
-
-
-      do {
-        price = +prompt("Сколько будет стоить данная работа?");
-      }
-      while(!appData.isNumber(price))
-
-      appData.screens.push({id: i, name: name,price: price})
-      //  в современном стандарте можно записать и так
-      // screens.push({id: i, name, price})
-
-    }
-
-    for (let i =0; i < 2; i++){
-
-      let name = ""
-      let price = 0
-
-      do {
-        name = prompt("Какой дополнительный тип услуги нужен ?")
-      }
-      while(appData.isNumber(name))
-      // добавляем в конец имени индетификатор
-      name += " " + i;
-
-      do {
-        price = +prompt("Сколько это будет стоить?")
-      } while (!appData.isNumber(price))
-
-      appData.services[name] = +price
-
-    }
-
-    appData.adaptive = confirm("Нужен ли адаптив на сайте?");
-  },
-  // данный мтод будет высчитывать стоимость нашиъ услуг экранов
-  addPrices: function(){
-    // for (let screen of appData.screens){
-    //   appData.screenPrice += screen.price
-    // }
-    appData.screenPrice = appData.screens.reduce(function(sum, item){
-      return (sum + item.price)
-    },0)
-
-    for (let key in appData.services) {
-      // в allServicePrices попадёт ссума всех наших значений из объекта services
-      appData.allServicePrices += appData.services[key]
-    }
-  },
-  isNumber: function(num){
-  // универсальная функция для проверки на число
-  return !isNaN(parseFloat(num)) && isFinite(num)
-  // parseFloat(n)  Получаем из строки число с плавающей точкой или NaN в случае неудачи
-  // isNaN(n)  Собственно проверяет значение на NaN, а мы проверяем с отрицанием
-  // isFinite(n)  Проверяем является ли переданное значение конечным числом
-  },
-  getFullPrice: function (){
-    appData.fullPrice = appData.screenPrice + appData.allServicePrices
-  },
-  getServicePercentPrices: function (){
-    appData.servicePercentPrice = appData.fullPrice - Math.round(appData.fullPrice * (appData.rollback/100));
-  },
-  getTitle: function (){
-    appData.title = appData.title.trim()[0].toUpperCase() + appData.title.trim(1).toLocaleLowerCase();
-  },
-  getRollbackMessage: function(price){
-    if (price >= 30000){
-      return "Даём скидку в 10%"
-    } else if (price>=15000 && price < 30000) {
-      return "Даём скидку в 5%"
-    } else if (price>=0 && price < 15000) {
-      return "Скидка не предусмотрена"
-    } else {
-      return "что-то пошло не так"
-    }
-  },
-  showTypeOf: function(variable){
-    console.log(variable, typeof variable);
-    console.log(appData.screens);
-  }
-}
-
-appData.start()
+// создаём элмент li
+const newElemSixBookEight = document.createElement('li')
+newElemSixBookEight.textContent = "Глава 8: За пределами ES6"
+// добавляем вконец элемент
+itemsSixBook.append(newElemSixBookEight)
+// меняем места с приложением А главу 8 ую
+itemsSixBook.querySelectorAll('li')[8].after(itemsSixBook.querySelectorAll('li')[10])
+console.log(itemsSixBook);
