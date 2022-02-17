@@ -174,9 +174,6 @@ const appData = {
 
   // данный мтод будет высчитывать стоимость нашиъ услуг экранов
   addPrices: function () {
-    // for (let screen of appData.screens){
-    //   appData.screenPrice += screen.price
-    // }
     appData.screenPrice = appData.screens.reduce(function (sum, item) {
       return (sum + item.price)
     }, 0)
@@ -199,21 +196,6 @@ const appData = {
       appData.screensAll += element.count
     });
   },
-
-  // // getServicePercentPrices: function () {
-  // //   appData.servicePercentPrice = appData.fullPrice - Math.round(appData.fullPrice * (appData.rollback / 100));
-  // // },
-  // getRollbackMessage: function (price) {
-  //   if (price >= 30000) {
-  //     return "Даём скидку в 10%"
-  //   } else if (price >= 15000 && price < 30000) {
-  //     return "Даём скидку в 5%"
-  //   } else if (price >= 0 && price < 15000) {
-  //     return "Скидка не предусмотрена"
-  //   } else {
-  //     return "что-то пошло не так"
-  //   }
-  // },
   showTypeOf: function (variable) {
     console.log(variable, typeof variable);
     console.log(appData.screens);
@@ -225,4 +207,3 @@ const appData = {
 }
 
 appData.init()
-
