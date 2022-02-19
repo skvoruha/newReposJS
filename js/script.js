@@ -51,7 +51,7 @@ const appData = {
   screensAll: 0,
   screenPrice: 0,
   adaptive: true,
-  rollback: 0,
+  rollback: 10,
   servicePricesPercent: 0,
   servicePricesNumber: 0,
   fullPrice: 0,
@@ -75,7 +75,7 @@ const appData = {
     // 1-12
     if(appData.addScreens() == true)  alert("Не выбран ни один тип экрана в выпадающем списке и не введено их количество");
 
-    else  appData.start();
+    else appData.start();
   },
   addTitle:function(){
     // сдеали навазние вкалдки под название главного заголоовка
@@ -85,8 +85,17 @@ const appData = {
   start: function () {
 
     appData.addScreens()
+
+    // appData.screens.forEach(element => {
+    //   console.log(element.price);
+    // });
+
     appData.addServices()
+
     appData.addPrices()
+    // appData.getServicePercentPrices();
+
+    // appData.logger()
     appData.showResult()
 
   },
@@ -139,16 +148,24 @@ const appData = {
     })
   },
   showResult: function(){
+    // стоимость вёрстки
     total.value = appData.screenPrice
-    totalCountOther.value = appData.servicePricesPercent+  appData.servicePricesNumber
-    fullTotalCount.value = appData.fullPrice
-    totalCountRollback.value = appData.servicePercentPrice
-    // 4-12
+    // Сумарное количесство экранов
     totalCount.value = appData.screensAll
+    // суммарная стоимость дополнительных услуг
+    totalCountOther.value = appData.servicePricesPercent +  appData.servicePricesNumber
+    // итоговая стоимость
+    fullTotalCount.value = appData.fullPrice
+    // Стоимость с учетом отката
+    totalCountRollback.value = appData.servicePercentPrice
+
+    // 4-12
   },
   addScreenBlock: function(){
     // клонируем блок с расчёт по типу экарана
     const cloneScreen = screens[0].cloneNode(true)
+    // console.log(screens[screens.length - 1]);
+    // console.log(screens);
     // обращаемся к самому последнему элменту массива screens
     screens[screens.length - 1].after(cloneScreen)
   },
@@ -162,9 +179,6 @@ const appData = {
 
   // данный мтод будет высчитывать стоимость нашиъ услуг экранов
   addPrices: function () {
-    // for (let screen of appData.screens){
-    //   appData.screenPrice += screen.price
-    // }
     appData.screenPrice = appData.screens.reduce(function (sum, item) {
       return (sum + item.price)
     }, 0)
@@ -182,12 +196,15 @@ const appData = {
     appData.fullPrice = appData.screenPrice + appData.servicePricesNumber + appData.servicePricesPercent
     // 3-12 В servicePercentPrice  запишем цену с учётом отката посреднику
     appData.servicePercentPrice = appData.fullPrice + Math.round(appData.fullPrice * (appData.rollback / 100));
-    // 4-12
-    appData.screens.forEach(element => {
-      appData.screensAll += element.count
-    });
-  },
 
+
+    // 4-12
+    appData.screensAll = appData.screens.reduce(function(sum, elem) {
+      return sum + elem.count;
+    }, 0);
+    // 4-12
+
+  },
   showTypeOf: function (variable) {
     console.log(variable, typeof variable);
     console.log(appData.screens);
@@ -203,4 +220,3 @@ const appData = {
 }
 
 appData.init()
-
