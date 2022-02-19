@@ -101,9 +101,6 @@ const appData = {
   },
   addScreens: function(){
 
-    // 4-12 Создаём счётчик count
-
-
     appData.screens.length = 0
     screens = document.querySelectorAll('.screen')
 
@@ -161,6 +158,8 @@ const appData = {
   addScreenBlock: function(){
     // клонируем блок с расчёт по типу экарана
     const cloneScreen = screens[0].cloneNode(true)
+    // console.log(screens[screens.length - 1]);
+    // console.log(screens);
     // обращаемся к самому последнему элменту массива screens
     screens[screens.length - 1].after(cloneScreen)
   },
