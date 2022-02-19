@@ -148,12 +148,18 @@ const appData = {
     })
   },
   showResult: function(){
+    // стоимость вёрстки
     total.value = appData.screenPrice
-    totalCountOther.value = appData.servicePricesPercent+  appData.servicePricesNumber
-    fullTotalCount.value = appData.fullPrice
-    totalCountRollback.value = appData.servicePercentPrice
-    // 4-12
+    // Сумарное количесство экранов
     totalCount.value = appData.screensAll
+    // суммарная стоимость дополнительных услуг
+    totalCountOther.value = appData.servicePricesPercent +  appData.servicePricesNumber
+    // итоговая стоимость
+    fullTotalCount.value = appData.fullPrice
+    // Стоимость с учетом отката
+    totalCountRollback.value = appData.servicePercentPrice
+
+    // 4-12
   },
   addScreenBlock: function(){
     // клонируем блок с расчёт по типу экарана
@@ -190,10 +196,14 @@ const appData = {
     appData.fullPrice = appData.screenPrice + appData.servicePricesNumber + appData.servicePricesPercent
     // 3-12 В servicePercentPrice  запишем цену с учётом отката посреднику
     appData.servicePercentPrice = appData.fullPrice + Math.round(appData.fullPrice * (appData.rollback / 100));
+
+
     // 4-12
-    appData.screens.forEach(element => {
-      appData.screensAll += element.count
-    });
+    appData.screensAll = appData.screens.reduce(function(sum, elem) {
+      return sum + elem.count;
+    }, 0);
+    // 4-12
+
   },
   showTypeOf: function (variable) {
     console.log(variable, typeof variable);
