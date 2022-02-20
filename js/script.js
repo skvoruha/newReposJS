@@ -60,22 +60,24 @@ const appData = {
   servicesNumber: {},
 
   init: function () {
-    appData.addTitle()
+    this.addTitle()
 
-    btnStart.addEventListener('click', appData.checklAddScreen)
+    btnStart.addEventListener('click', this.checklAddScreen.bind(this))
+    btnReset.addEventListener('click', this.resetBtnClick.bind(this))
 
-    btnPlus.addEventListener('click',appData.addScreenBlock)
+    btnPlus.addEventListener('click',this.addScreenBlock.bind(this))
     // input type range добавляем просулшивание события
-    rollbackInput.addEventListener('input',appData.inputRange)
-    rollbackInput.addEventListener('change',appData.inputRange)
+    rollbackInput.addEventListener('input',this.inputRange.bind(this))
+    rollbackInput.addEventListener('change',this.inputRange.bind(this))
 
   },
 
   checklAddScreen: function() {
     // 1-12
-    if(appData.addScreens() == true)  alert("Не выбран ни один тип экрана в выпадающем списке и не введено их количество");
+    if(this.addScreens() == true) alert("Не выбран ни один тип экрана в выпадающем списке и не введено их количество");
 
-    else appData.start();
+    else this.start();
+    // else (() => appData.start)
   },
   addTitle:function(){
     // сдеали навазние вкалдки под название главного заголоовка
@@ -84,27 +86,19 @@ const appData = {
 
   start: function () {
 
-    appData.addScreens()
+    this.addScreens()
+    this.addServices()
+    this.addPrices()
+    this.showResult()
+    this.resetBtnClick()
 
-    // appData.screens.forEach(element => {
-    //   console.log(element.price);
-    // });
-
-    appData.addServices()
-
-    appData.addPrices()
-    // appData.getServicePercentPrices();
-
-    // appData.logger()
-    appData.showResult()
 
   },
+  // данный метод собирает значение из select и input чтобы ссделать вычиследния
   addScreens: function(){
+    this.screens.length = 0
 
-    appData.screens.length = 0
-    screens = document.querySelectorAll('.screen')
-
-    screens.forEach(function(screen, index){
+    screens.forEach((screen, index) => {
 
       const select = screen.querySelector('select')
       const input = screen.querySelector('input')
@@ -112,7 +106,7 @@ const appData = {
 
       // Получаем из select все options и выбираем  [select.selectedIndex] тот элемент п оинедкус котрый на нужен
       const selectname = select.options[select.selectedIndex].textContent
-        appData.screens.push({
+        this.screens.push({
         id: index,
         name: selectname,
         price: +select.value * +input.value,
@@ -121,43 +115,42 @@ const appData = {
         })
       })
       //1-12 в обекте screeens ищем item -> price и если он равен 0 то
-      if(appData.screens.find(item => item.price === 0)) return true
+      if(this.screens.find(item => item.price === 0)) return true
       else return false
-
   },
   addServices: function(){
-    OtherItemsPercent.forEach(function(item){
+    OtherItemsPercent.forEach((item) =>{
       const check = item.querySelector('input[type=checkbox]')
       const label = item.querySelector('label')
       const input = item.querySelector('input[type=text]')
       // в чекбоксе есть проверка checked стоит галовка
       if (check.checked) {
-        appData.servicesPercent[label.textContent] = +input.value
+        this.servicesPercent[label.textContent] = +input.value
       }
 
     })
-    OtherItemsNumber.forEach(function(item){
+    OtherItemsNumber.forEach((item) => {
       const check = item.querySelector('input[type=checkbox]')
       const label = item.querySelector('label')
       const input = item.querySelector('input[type=text]')
       // в чекбоксе есть проверка checked стоит галовка
       if (check.checked) {
-        appData.servicesNumber[label.textContent] = +input.value
+        this.servicesNumber[label.textContent] = +input.value
       }
 
     })
   },
   showResult: function(){
     // стоимость вёрстки
-    total.value = appData.screenPrice
+    total.value = this.screenPrice
     // Сумарное количесство экранов
-    totalCount.value = appData.screensAll
+    totalCount.value = this.screensAll
     // суммарная стоимость дополнительных услуг
-    totalCountOther.value = appData.servicePricesPercent +  appData.servicePricesNumber
+    totalCountOther.value = this.servicePricesPercent +  this.servicePricesNumber
     // итоговая стоимость
-    fullTotalCount.value = appData.fullPrice
+    fullTotalCount.value = this.fullPrice
     // Стоимость с учетом отката
-    totalCountRollback.value = appData.servicePercentPrice
+    totalCountRollback.value = this.servicePercentPrice
 
     // 4-12
   },
@@ -165,41 +158,44 @@ const appData = {
     // клонируем блок с расчёт по типу экарана
     const cloneScreen = screens[0].cloneNode(true)
     // console.log(screens[screens.length - 1]);
-    // console.log(screens);
+
+    // Обрщаемся к дочернему элеммеену ищеи инпут и ставим начение пустое
+    cloneScreen.childNodes[3].childNodes[1].value = ''
+
     // обращаемся к самому последнему элменту массива screens
     screens[screens.length - 1].after(cloneScreen)
   },
   logger: function () {
-    for (let key in appData) {
-      let type = typeof (appData[key])
+    for (let key in this) {
+      let type = typeof (this[key])
 
-      console.log(key, (type === 'function' ? '' : appData[key]), '(' + type + ')');
+      console.log(key, (type === 'function' ? '' : this[key]), '(' + type + ')');
     }
   },
 
   // данный мтод будет высчитывать стоимость нашиъ услуг экранов
   addPrices: function () {
-    appData.screenPrice = appData.screens.reduce(function (sum, item) {
+    this.screenPrice = this.screens.reduce((sum, item)=> {
       return (sum + item.price)
     }, 0)
 
-    for (let key in appData.servicesNumber) {
+    for (let key in this.servicesNumber) {
       // в allServicePrices попадёт ссума всех наших значений из объекта services
-      appData.servicePricesNumber += appData.servicesNumber[key]
+      this.servicePricesNumber += this.servicesNumber[key]
     }
 
-    for (let key in appData.servicesPercent) {
+    for (let key in this.servicesPercent) {
       // в allServicePrices попадёт ссума всех наших значений из объекта services
-      appData.servicePricesPercent += appData.screenPrice * (appData.servicesPercent[key] / 100)
+      this.servicePricesPercent += this.screenPrice * (this.servicesPercent[key] / 100)
     }
 
-    appData.fullPrice = appData.screenPrice + appData.servicePricesNumber + appData.servicePricesPercent
+    this.fullPrice = this.screenPrice + this.servicePricesNumber + this.servicePricesPercent
     // 3-12 В servicePercentPrice  запишем цену с учётом отката посреднику
-    appData.servicePercentPrice = appData.fullPrice + Math.round(appData.fullPrice * (appData.rollback / 100));
+    this.servicePercentPrice = this.fullPrice + Math.round(this.fullPrice * (this.rollback / 100));
 
 
     // 4-12
-    appData.screensAll = appData.screens.reduce(function(sum, elem) {
+    this.screensAll = this.screens.reduce((sum, elem) => {
       return sum + elem.count;
     }, 0);
     // 4-12
@@ -207,15 +203,87 @@ const appData = {
   },
   showTypeOf: function (variable) {
     console.log(variable, typeof variable);
-    console.log(appData.screens);
+    console.log(this.screens);
   },
   // 2-12
   inputRange: function(event){
     spanRangeValue.textContent = event.target.value + "%"
   // hard-1-12
-    appData.rollback = event.target.value
-    appData.servicePercentPrice = appData.fullPrice + Math.round(appData.fullPrice * (appData.rollback / 100));
-    totalCountRollback.value = appData.servicePercentPrice
+    this.rollback = event.target.value
+    this.servicePercentPrice = this.fullPrice + Math.round(this.fullPrice * (this.rollback / 100));
+    totalCountRollback.value = this.servicePercentPrice
+  },
+  // 14-3
+  resetBtnClick: function(){
+    const inputRange = document.querySelector('input[type = "range"]')
+
+    // если btnReset.style.display == block при нажатии унопуи , то обнуляем чекбоксы
+    if (btnReset.style.display == 'block') {
+      OtherItemsPercent.forEach((item) =>{
+        const check = item.querySelector('input[type=checkbox]')
+        // в чекбоксе есть проверка checked стоит галовка
+        // если стоит галочка то убрать
+        if (check.checked) {
+          check.checked = !check.checked
+        }
+      })
+      OtherItemsNumber.forEach((item) => {
+        const check = item.querySelector('input[type=checkbox]')
+        // в чекбоксе есть проверка checked стоит галочка
+        if (check.checked) {
+          check.checked = !check.checked
+        }
+      })
+      // Обнуление параметров вычислений
+      document.querySelectorAll('input.total-input').forEach(element => {
+        element.value = 0
+      });
+
+      // очищаем массив с веденными данными
+      let elems = document.querySelectorAll(".screen");
+      for (let i = elems.length - 1; i > 0; i--) {
+          elems[i].remove();
+      }
+      elems[0].querySelector('input').value = ''
+      elems[0].querySelector('select').selectedIndex  = 0
+
+      // ниже скобка это конец проверки btnReset.style.display == block
+
+      // присваиваем значение 0 инпуту
+      inputRange.value = 0
+      document.querySelector('span.range-value').textContent = 0 + "%"
+      // присваиваем значение ноль полной цене чтобы не работал Range
+      this.fullPrice = 0
+    }
+
+    // получаем все инпута с типо текст потом перечисляем их через массив и присваиваем противоположное свойсвто
+    let inputCountScreen = document.querySelectorAll('input[placeholder="Количество экранов"]')
+    inputCountScreen.forEach(element => {
+      element.disabled = !element.disabled
+    });
+    // получаем селект и присваиваем пртивоположное
+    document.querySelectorAll('select').forEach(element=>{
+      element.disabled = !element.disabled
+    })
+    // получаем селект и присваиваем пртивоположное
+    document.querySelectorAll('input[type="checkbox"]').forEach(element=>{
+      element.disabled = !element.disabled
+    })
+
+    // Кнопке плюс блокируем disabled
+    btnPlus.disabled = !btnPlus.disabled
+
+    // input с типо range
+    inputRange.disabled = !inputRange.disabled
+
+
+    // присваиваем кнопке расчитать свойства кнопки сброс
+    // создаем переменнюу temp для того чтобы передать значние display
+    let temp
+    temp = btnStart.style.display
+    btnStart.style.display = btnReset.style.display
+    btnReset.style.display = temp
+
   }
 }
 
