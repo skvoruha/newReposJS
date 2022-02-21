@@ -28,21 +28,11 @@ const totalCountRollback = document.getElementsByClassName('total-input')[4]
 let screens = document.querySelectorAll('.screen')
 
 
-// Вывод заголовка 1
-// console.log(title);
-// // Вывод в консоль кнопок расчитать и сброс
-// console.log(btnStart);
-// console.log(btnReset);
-// console.log(percent);
-// console.log(number);
-// console.log(rollbackInput);
-// console.log(spanRangeValue);
-// // Вывод в консоль total-input
-// for (const iterator of totalInput) {
-//   console.log(iterator);
-// }
-// console.log(screenBlock);
-// КОНЕЦ ВЫВОДОВ В КОНСОЛЬ
+// 9 чекбок с пееренной с cms
+const cmsOpen = document.getElementById('cms-open')
+
+// получаем елемент select который сязан с cms
+const cmsSelect = document.getElementById('cms-select')
 
 // создадим объект
 const appData = {
@@ -51,19 +41,47 @@ const appData = {
   screensAll: 0,
   screenPrice: 0,
   adaptive: true,
-  rollback: 10,
+  rollback: 0,
   servicePricesPercent: 0,
   servicePricesNumber: 0,
   fullPrice: 0,
   servicePercentPrice: 0,
   servicesPercent: {},
   servicesNumber: {},
+  // ПЕРМЕСТИТЬ ПОТОМ ВНИЗУ
+  // 14-1-hard
+  cmsSelection: function(){
+    // констанда с блоком .hidden-cms-variants которй с cms
+    const cmsVariants = document.querySelector('.hidden-cms-variants')
+
+    // проверяем стоит ли галочка на пнукте с выбором cms
+    if (cmsOpen.checked) {
+      // присваиваем значние flex
+      cmsVariants.style.display = 'flex'
+    } else {
+      cmsVariants.style.display = 'none'
+    }
+    // 14-2-hard
+    cmsSelect.addEventListener('change',selectCheck.bind(this))
+
+    function selectCheck(){
+      // Если зачание с select равен  other то мы открываем блок, с процентом
+      const selectValue = cmsSelect.options[cmsSelect.selectedIndex].value
+      if (selectValue == 'other') {
+        document.querySelector('.hidden-cms-variants > .main-controls__input').style.display = 'block'
+      }
+
+    }
+
+  },
 
   init: function () {
     this.addTitle()
 
     btnStart.addEventListener('click', this.checklAddScreen.bind(this))
     btnReset.addEventListener('click', this.resetBtnClick.bind(this))
+    // вншаем событие на чекбокс с cms
+    cmsOpen.addEventListener('click', this.cmsSelection.bind(this))
 
     btnPlus.addEventListener('click',this.addScreenBlock.bind(this))
     // input type range добавляем просулшивание события
@@ -86,7 +104,7 @@ const appData = {
 
   start: function () {
 
-    this.addScreens()
+    // this.addScreens()
     this.addServices()
     this.addPrices()
     this.showResult()
@@ -96,6 +114,8 @@ const appData = {
   },
   // данный метод собирает значение из select и input чтобы ссделать вычиследния
   addScreens: function(){
+    screens = document.querySelectorAll('.screen')
+    // присваиваем предиущему значение длинуу массива 0
     this.screens.length = 0
 
     screens.forEach((screen, index) => {
@@ -155,6 +175,8 @@ const appData = {
     // 4-12
   },
   addScreenBlock: function(){
+    // присваиваем длинну массива ноль чтобы можно было добавлять элементы после очистки
+    this.screens.length = 0
     // клонируем блок с расчёт по типу экарана
     const cloneScreen = screens[0].cloneNode(true)
     // console.log(screens[screens.length - 1]);
@@ -175,6 +197,7 @@ const appData = {
 
   // данный мтод будет высчитывать стоимость нашиъ услуг экранов
   addPrices: function () {
+    // цена экранов
     this.screenPrice = this.screens.reduce((sum, item)=> {
       return (sum + item.price)
     }, 0)
@@ -190,6 +213,16 @@ const appData = {
     }
 
     this.fullPrice = this.screenPrice + this.servicePricesNumber + this.servicePricesPercent
+    // переменная со значение процена с wordpress
+    const selectValue = cmsSelect.options[cmsSelect.selectedIndex].value
+    // переменная со знание если выбрили другие типы cms
+    const cmsOtherInput = document.getElementById('cms-other-input')
+    // если значне с wordpress = 50 то меняем цену
+    if (selectValue == 50) {
+      this.fullPrice = this.fullPrice + this.fullPrice * (selectValue/100)
+    } else if (cmsOtherInput.value > 0 ) {
+      this.fullPrice = this.fullPrice + this.fullPrice * (cmsOtherInput.value/100)
+    }
     // 3-12 В servicePercentPrice  запишем цену с учётом отката посреднику
     this.servicePercentPrice = this.fullPrice + Math.round(this.fullPrice * (this.rollback / 100));
 
@@ -216,6 +249,12 @@ const appData = {
   // 14-3
   resetBtnClick: function(){
     const inputRange = document.querySelector('input[type = "range"]')
+    // записываем в переменнюу input который получает значение если выбрали другие ither
+    const cmsOtherInput = document.getElementById('cms-other-input')
+    // получаем елемент select который сязан с cms
+    const cmsSelect = document.getElementById('cms-select')
+    // получаем объект с элементами для CMS
+    const hiddenCmsVariants = document.querySelector('.hidden-cms-variants')
 
     // если btnReset.style.display == block при нажатии унопуи , то обнуляем чекбоксы
     if (btnReset.style.display == 'block') {
@@ -247,13 +286,31 @@ const appData = {
       elems[0].querySelector('input').value = ''
       elems[0].querySelector('select').selectedIndex  = 0
 
-      // ниже скобка это конец проверки btnReset.style.display == block
 
       // присваиваем значение 0 инпуту
       inputRange.value = 0
       document.querySelector('span.range-value').textContent = 0 + "%"
       // присваиваем значение ноль полной цене чтобы не работал Range
+        // цена экранов
+        this.screenPrice = 0
+      // количество экравно
+      this.screensAll = 0
+      // доп услуги
+      this.servicePricesPercent = 0
+      this.servicePricesNumber = 0
+      // итоговая стоимость
       this.fullPrice = 0
+      // присваиваем значение ноль элементу который открывается при выборе другие cms
+      cmsOtherInput.value = 0
+      hiddenCmsVariants.style.display = 'none'
+      console.log(cmsSelect.selectedIndex);
+      cmsSelect.selectedIndex  = 0
+      if (cmsOpen.checked) {
+        cmsOpen.checked = !cmsOpen.checked
+      }
+
+
+      // ниже скобка это конец проверки btnReset.style.display == block
     }
 
     // получаем все инпута с типо текст потом перечисляем их через массив и присваиваем противоположное свойсвто
