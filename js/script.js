@@ -51,7 +51,7 @@ const appData = {
   screensAll: 0,
   screenPrice: 0,
   adaptive: true,
-  rollback: 10,
+  rollback: 0,
   servicePricesPercent: 0,
   servicePricesNumber: 0,
   fullPrice: 0,
@@ -155,6 +155,8 @@ const appData = {
     // 4-12
   },
   addScreenBlock: function(){
+    // добавим переменнюу screens для того чтобы получать актуальную длину объекта
+    screens = document.querySelectorAll('.screen')
     // клонируем блок с расчёт по типу экарана
     const cloneScreen = screens[0].cloneNode(true)
     // console.log(screens[screens.length - 1]);
