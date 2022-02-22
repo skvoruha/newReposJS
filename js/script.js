@@ -175,6 +175,8 @@ const appData = {
     // 4-12
   },
   addScreenBlock: function(){
+    // добавим переменнюу screens для того чтобы получать актуальную длину объекта
+    screens = document.querySelectorAll('.screen')
     // присваиваем длинну массива ноль чтобы можно было добавлять элементы после очистки
     this.screens.length = 0
     // клонируем блок с расчёт по типу экарана
