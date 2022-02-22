@@ -254,6 +254,7 @@ const appData = {
       // ниже скобка это конец проверки btnReset.style.display == block
 
       // присваиваем значение 0 инпуту
+      this.rollback = 0
       inputRange.value = 0
       document.querySelector('span.range-value').textContent = 0 + "%"
       // присваиваем значение ноль полной цене чтобы не работал Range
