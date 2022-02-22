@@ -86,7 +86,7 @@ const appData = {
 
   start: function () {
 
-    this.addScreens()
+    // this.addScreens()
     this.addServices()
     this.addPrices()
     this.showResult()
@@ -97,6 +97,8 @@ const appData = {
   // данный метод собирает значение из select и input чтобы ссделать вычиследния
   addScreens: function(){
     this.screens.length = 0
+    screens = document.querySelectorAll('.screen')
+    console.log(screens);
 
     screens.forEach((screen, index) => {
 
