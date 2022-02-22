@@ -117,6 +117,8 @@ const appData = {
     screens = document.querySelectorAll('.screen')
     // присваиваем предиущему значение длинуу массива 0
     this.screens.length = 0
+    screens = document.querySelectorAll('.screen')
+    console.log(screens);
 
     screens.forEach((screen, index) => {
 
@@ -175,10 +177,10 @@ const appData = {
     // 4-12
   },
   addScreenBlock: function(){
-    // добавим переменнюу screens для того чтобы получать актуальную длину объекта
-    screens = document.querySelectorAll('.screen')
     // присваиваем длинну массива ноль чтобы можно было добавлять элементы после очистки
     this.screens.length = 0
+    // добавим переменнюу screens для того чтобы получать актуальную длину объекта
+    screens = document.querySelectorAll('.screen')
     // клонируем блок с расчёт по типу экарана
     const cloneScreen = screens[0].cloneNode(true)
     // console.log(screens[screens.length - 1]);
@@ -290,6 +292,7 @@ const appData = {
 
 
       // присваиваем значение 0 инпуту
+      this.rollback = 0
       inputRange.value = 0
       document.querySelector('span.range-value').textContent = 0 + "%"
       // присваиваем значение ноль полной цене чтобы не работал Range
