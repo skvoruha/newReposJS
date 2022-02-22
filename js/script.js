@@ -313,8 +313,18 @@ const appData = {
       if (cmsOpen.checked) {
         cmsOpen.checked = !cmsOpen.checked
       }
+      // присваимваем доп услугам 0
+      this.servicePricesPercent = 0
+      // присваимваем доп услугам 0
+      this.servicePricesNumber= 0
 
-
+      // очищаем объекты с доп услугами
+      for (const prop of Object.getOwnPropertyNames(this.servicesNumber)) {
+        delete this.servicesNumber[prop];
+      }
+      for (const prop of Object.getOwnPropertyNames(this.servicesPercent)) {
+        delete this.servicesPercent[prop];
+      }
       // ниже скобка это конец проверки btnReset.style.display == block
     }
 
